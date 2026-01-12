@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ULTRA GPT</title>
+<style>
+body{
+  margin:0;
+  font-family:system-ui;
+  background:#050b14;
+  color:#0ff;
+}
+header{
+  display:flex;
+  align-items:center;
+  padding:20px;
+  font-size:28px;
+  font-weight:bold;
+  background:linear-gradient(90deg,#00fff0,#0077ff);
+  box-shadow:0 0 20px #00fff0;
+}
+header img{
+  height:60px;
+  margin-right:12px;
+  filter:drop-shadow(0 0 10px #0ff);
+}
+#chat{
+  height:calc(100vh - 100px);
+  overflow-y:auto;
+  padding:20px;
+}
+.msg{margin-bottom:14px;}
+.user{color:#0ff;}
+.bot{color:#ff0;text-shadow:0 0 6px #ff0;}
+#inputBox{
+  display:flex;
+  padding:15px;
+  background:#02050a;
+  border-top:1px solid #0ff;
+}
+input{
+  flex:1;
+  padding:14px;
+  font-size:16px;
+  background:#000;
+  color:#0ff;
+  border:1px solid #0ff;
+  box-shadow:0 0 10px #0ff inset;
+}
+button{
+  margin-left:10px;
+  padding:14px 20px;
+  background:#0ff;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <img src="https://i.ibb.co/7gS6Xw7/forsaken1x.png">
+  ULTRA GPT
+</header>
+
+<div id="chat"></div>
+
+<div id="inputBox">
+  <input id="input" placeholder="Message ULTRA GPT..." />
+  <button onclick="send()">SEND</button>
+</div>
+
+<script>
+function add(role,text){
+  const d=document.createElement("div");
+  d.className="msg "+role;
+  d.textContent=(role==="user"?"You: ":"ULTRA GPT: ")+text;
+  document.getElementById("chat").appendChild(d);
+  d.scrollIntoView();
+}
+
+async function send(){
+  const i=document.getElementById("input");
+  if(!i.value)return;
+  add("user",i.value);
+
+  const r=await fetch("/api/chat",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({message:i.value})
+  });
+
+  const j=await r.json();
+  add("bot",j.reply);
+  i.value="";
+}
+</script>
+</body>
+</html>
